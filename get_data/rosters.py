@@ -16,5 +16,5 @@ for team in team_abbr:
     print(roster_response)
     if roster_response.status_code == 200:
         roster_json = json.loads(roster_response.text)
-        with open(f'puckle/get_data/team_rosters/{team}.json', 'w', encoding='utf-8') as f:
+        with open(f'get_data/team_rosters/{team}.json', 'w', encoding='utf-8') as f:
             json.dump(roster_json, f, ensure_ascii=False, indent=4)
