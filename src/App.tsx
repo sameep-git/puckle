@@ -1,9 +1,27 @@
-import type { Component } from 'solid-js';
+import { createSignal, type Component } from 'solid-js';
 //import AboutIcon from "~icons/bx/bxs-info-circle"
 import logo from './logo.svg';
 import styles from './App.module.css';
+import PlayerSelect from "./components/CustomSearch"
 
-const App: Component = () => {
+import players from '../get_data/players.json'
+
+export default () => {
+  const playerNames = players.map(player => player.Name).sort()
+
+  const [playerGuess, setPlayerGuess] = createSignal<string>('')
+
+
+  const SearchBox = () => {
+    return (
+      <>
+        <div class="mt-2">
+          <PlayerSelect guess={playerGuess} setGuess={setPlayerGuess} options={playerNames}/>
+        </div>
+      </>
+    )
+  }
+
   return (
     <>
       <div class="w-screen bg-primary-900 text-primary-100">
@@ -17,16 +35,11 @@ const App: Component = () => {
               
             </div>
           </div>
-
           <hr class="border-accent"/>
-
-          <input>
-            Guess player
-          </input>
+            <SearchBox/>
         </div>
       </div>
     </>
   );
 };
-
-export default App;
+// export default App;

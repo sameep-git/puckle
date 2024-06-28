@@ -1,5 +1,6 @@
 /* @refresh reload */
 import { render } from 'solid-js/web';
+import { Router, Route } from "@solidjs/router"
 
 import './index.css';
 import App from './App';
@@ -30,4 +31,8 @@ document.documentElement.style.setProperty('--ACCENT', accentColor[400] as strin
 
 const root = document.getElementById('root');
 
-render(() => <App />, root!);
+render(() => (
+  <Router>
+    <Route path="/" component={App}/>
+  </Router>
+), root!);
