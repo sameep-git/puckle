@@ -3,7 +3,7 @@ import { render } from 'solid-js/web';
 import { Router, Route } from "@solidjs/router"
 
 import './index.css';
-import App from './App';
+import Game from './pages/Game';
 import colors from 'tailwindcss/colors'
 
 const colorArray = [
@@ -33,6 +33,6 @@ const root = document.getElementById('root');
 
 render(() => (
   <Router>
-    <Route path="/" component={App}/>
+    <Route path="/" component={Game}/>
   </Router>
 ), root!);

@@ -49,10 +49,10 @@ const PlayerSelect: Component<{
       };
       const handleKeydown: JSX.EventHandler<HTMLInputElement, KeyboardEvent> = (event) => {
         let input = document.getElementById('customSelectInput') as HTMLInputElement;
-        if (event.code === 'ArrowUp') {
+        if (event.code === 'ArrowDown') {
           event.preventDefault()
           selected() === -1 ? setSelected(0) : (setSelected(prev => prev + 1 === filteredOptions().length ? 0 : prev + 1));
-        } else if (event.code === 'ArrowDown') {
+        } else if (event.code === 'ArrowUp') {
           event.preventDefault()
           selected() === -1 ? setSelected(0) : (setSelected(prev => prev + 1 === filteredOptions().length ? 0 : Math.max(prev - 1, 0)));
         } else if (event.code === 'Tab') {
@@ -72,7 +72,7 @@ const PlayerSelect: Component<{
           <input
             type="text"
             placeholder="Enter a guess..."
-            class="w-full p-2 bg-primary-800 text-primary-100 mx-auto block rounded placeholder:font-emoji"
+            class="w-full p-2 bg-primary-800 text-primary-100 mx-auto block rounded placeholder:font-emoji outline-none"
             value={text()}
             onInput={handleInput}
             onKeyDown={handleKeydown}
@@ -81,7 +81,7 @@ const PlayerSelect: Component<{
             id='customSelectInput'
           />
           <Show when={isVisible()}>
-            <ul class="flex-col-reverse outline outline-1 outline-accent rounded-t max-h-48 overflow-y-auto w-full overflow-x-clip bg-primary-700 absolute top-full" id='options'>
+            <ul class="flex flex-col rounded-t max-h-48 overflow-y-auto w-full overflow-x-clip bg-primary-700 absolute top-full" id='options'>
             <For each={filteredOptions()}>
               {(item, i) => (
                 <li 

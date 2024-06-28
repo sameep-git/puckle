@@ -10,7 +10,7 @@ export default {
         accent: "var(--ACCENT)",
       },
       fontFamily: {
-        display: ["Rubik Mono One", ...defaultTheme.fontFamily.sans],
+        display: ["Anton", ...defaultTheme.fontFamily.sans],
         sans: ["Rubik", ...defaultTheme.fontFamily.sans],
         emoji: ["Noto Color Emoji", "Rubik", ...defaultTheme.fontFamily.sans],
       },
