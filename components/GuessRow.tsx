@@ -16,34 +16,44 @@ export default function GuessRow({ guess }: GuessRowProps) {
     } else if (isClose) {
       bgClass = "bg-peach text-black";
     }
-    return `border-4 border-black px-3 py-3 font-bold text-center shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] text-sm ${bgClass} ${baseClass}`;
+    return `border-4 border-black px-2 py-2 md:px-3 md:py-3 font-bold text-center shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] text-xs md:text-sm ${bgClass} ${baseClass}`;
   };
 
   return (
-    <div className="grid grid-cols-7 gap-2">
-      <div className="bg-white border-4 border-black px-3 py-3 font-bold text-center shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] text-sm">
+    <>
+      {/* Mobile: Name on its own row */}
+      <div className="md:hidden bg-white border-4 border-black px-3 py-3 font-bold text-center shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] text-sm mb-2">
         {guess.player.name}
       </div>
-      <div className={getCellClass(guess.matches.team)}>
-        {guess.player.team}
+
+      {/* Mobile: 6 columns without name */}
+      <div className="grid grid-cols-6 md:grid-cols-7 gap-2">
+        {/* Desktop: Name in first column */}
+        <div className="hidden md:block bg-white border-4 border-black px-3 py-3 font-bold text-center shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] text-sm">
+          {guess.player.name}
+        </div>
+
+        <div className={getCellClass(guess.matches.team)}>
+          <div className="truncate">{guess.player.team}</div>
+        </div>
+        <div className={getCellClass(guess.matches.division, guess.matches.divisionClose)}>
+          <div className="truncate">{guess.player.division}</div>
+        </div>
+        <div className={getCellClass(guess.matches.position, guess.matches.positionClose)}>
+          {guess.player.position}
+        </div>
+        <div className={getCellClass(guess.matches.sweater, guess.matches.sweaterClose)}>
+          {guess.player.sweater}{" "}
+          {guess.hints.sweater !== "exact" && (guess.hints.sweater === "higher" ? "↑" : "↓")}
+        </div>
+        <div className={getCellClass(guess.matches.age)}>
+          {guess.player.age}{" "}
+          {guess.hints.age !== "exact" && (guess.hints.age === "higher" ? "↑" : "↓")}
+        </div>
+        <div className={getCellClass(guess.matches.country)}>
+          <div className="truncate">{guess.player.country}</div>
+        </div>
       </div>
-      <div className={getCellClass(guess.matches.division, guess.matches.divisionClose)}>
-        {guess.player.division}
-      </div>
-      <div className={getCellClass(guess.matches.position, guess.matches.positionClose)}>
-        {guess.player.position}
-      </div>
-      <div className={getCellClass(guess.matches.sweater, guess.matches.sweaterClose)}>
-        {guess.player.sweater}{" "}
-        {guess.hints.sweater !== "exact" && (guess.hints.sweater === "higher" ? "↑" : "↓")}
-      </div>
-      <div className={getCellClass(guess.matches.age)}>
-        {guess.player.age}{" "}
-        {guess.hints.age !== "exact" && (guess.hints.age === "higher" ? "↑" : "↓")}
-      </div>
-      <div className={getCellClass(guess.matches.country)}>
-        {guess.player.country}
-      </div>
-    </div>
+    </>
   );
 }

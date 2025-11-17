@@ -6,10 +6,10 @@ export default function InfoModal() {
 
   return (
     <>
-      {/* Info Button */}
+      {/* Info Button - moved down and made responsive */}
       <button
         onClick={() => setIsOpen(true)}
-        className="fixed top-6 right-6 bg-white border-4 border-black p-3 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] transition-all z-30"
+        className="fixed bottom-6 right-60 md:bottom-6 md:right-60 bg-white border-4 border-black py-1.5 px-1.5 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] transition-all z-30"
         aria-label="Info"
       >
         <svg
@@ -23,7 +23,7 @@ export default function InfoModal() {
         </svg>
       </button>
 
-      {/* Modal */}
+      {/* Modal - same as before */}
       {isOpen && (
         <div
           className="fixed inset-0 bg-black/50 flex items-center justify-center z-40 p-4"

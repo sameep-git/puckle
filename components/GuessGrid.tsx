@@ -14,8 +14,8 @@ export default function GuessGrid({ guesses, triesLeft }: GuessGridProps) {
   return (
     <div className="w-full max-w-4xl mt-8">
       <div className="space-y-4">
-        {/* Header Row */}
-        <div className="grid grid-cols-7 gap-2 text-center font-bold text-sm">
+        {/* Header Row - adjusted for mobile */}
+        <div className="hidden md:grid grid-cols-7 gap-2 text-center font-bold text-sm">
           <div>NAME</div>
           <div>TEAM</div>
           <div>DIV</div>
@@ -23,6 +23,16 @@ export default function GuessGrid({ guesses, triesLeft }: GuessGridProps) {
           <div>#</div>
           <div>AGE</div>
           <div>COUNTRY</div>
+        </div>
+
+        {/* Mobile header - 6 columns */}
+        <div className="grid md:hidden grid-cols-6 gap-2 text-center font-bold text-xs">
+          <div>TEAM</div>
+          <div>DIV</div>
+          <div>POS</div>
+          <div>#</div>
+          <div>AGE</div>
+          <div>CTY</div>
         </div>
 
         {/* Guess Rows */}
