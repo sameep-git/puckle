@@ -8,6 +8,7 @@ import GameStatus from "@/components/GameStatus";
 import GuessGrid from "@/components/GuessGrid";
 import InfoModal from "@/components/InfoModal";
 import { saveGameState, loadGameState } from "@/lib/gameStorage";
+import AboutModal from "@/components/AboutModal";
 
 const MAX_GUESSES = 6;
 
@@ -99,6 +100,7 @@ export default function HomePage() {
   return (
     <div className="min-h-screen bg-platinum flex flex-col items-center pt-16 px-4">
       <InfoModal />
+      <AboutModal />
 
       <Logo />
 
