@@ -12,7 +12,7 @@ export async function GET(request: Request) {
 
   const supabase = supabaseServer();
   
-  const { data: players, error } = await supabase
+  const { data: players, error } = await (await supabase)
     .from("players")
     .select("Id, Name")
     .ilike("Name", `%${query}%`)

@@ -70,7 +70,7 @@ async function generateSilhouette(headshotUrl: string): Promise<string | null> {
 export async function GET() {
   const supabase = supabaseServer();
   
-  const { data: players, error } = await supabase
+  const { data: players, error } = await (await supabase)
     .from("players")
     .select("Id, Headshot")
     .order("Id", { ascending: true });

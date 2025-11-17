@@ -10,6 +10,7 @@ import InfoModal from "@/components/InfoModal";
 import AboutModal from "@/components/AboutModal";
 import SilhouetteHint from "@/components/SilhouetteHint";
 import { saveGameState, loadGameState } from "@/lib/gameStorage";
+import UserMenu from "@/components/Auth/UserMenu";
 
 const MAX_GUESSES = 6;
 
@@ -126,6 +127,7 @@ export default function HomePage() {
 
   return (
     <div className="min-h-screen bg-platinum flex flex-col items-center pt-16 px-4 pb-20">
+      <UserMenu />
       <InfoModal />
       <AboutModal />
 

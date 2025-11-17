@@ -18,13 +18,13 @@ export async function POST(request: Request) {
   const supabase = supabaseServer();
 
   // Fetch both players
-  const { data: guessedPlayer, error: guessError } = await supabase
+  const { data: guessedPlayer, error: guessError } = await (await supabase)
     .from("players")
     .select("*")
     .eq("Id", guessedPlayerId)
     .single();
 
-  const { data: targetPlayer, error: targetError } = await supabase
+  const { data: targetPlayer, error: targetError } = await (await supabase)
     .from("players")
     .select("*")
     .eq("Id", targetPlayerId)

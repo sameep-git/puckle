@@ -13,7 +13,7 @@ export async function GET(request: Request, context: any) {
     return NextResponse.json({ error: "Missing player id" }, { status: 400 });
   }
 
-  const { data: player, error } = await supabase
+  const { data: player, error } = await (await supabase)
     .from("players")
     .select("*")
     .eq("Id", id)
