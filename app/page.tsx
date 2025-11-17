@@ -7,6 +7,7 @@ import SearchBar from "@/components/SearchBar";
 import GameStatus from "@/components/GameStatus";
 import GuessGrid from "@/components/GuessGrid";
 import InfoModal from "@/components/InfoModal";
+import { saveGameState, loadGameState } from "@/lib/gameStorage";
 
 const MAX_GUESSES = 6;
 
@@ -15,17 +16,33 @@ export default function HomePage() {
   const [guesses, setGuesses] = useState<GuessResult[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [gameWon, setGameWon] = useState(false);
+  const [gameLost, setGameLost] = useState(false);
+  const [dateString, setDateString] = useState("");
 
-  const gameLost = guesses.length >= MAX_GUESSES && !gameWon;
   const gameActive = !gameWon && !gameLost;
 
-  // Fetch daily player on mount
+  // Load saved game state on mount
   useEffect(() => {
+    const today = new Date().toISOString().slice(0, 10);
+    setDateString(today);
+
+    // Try to load saved game first
+    const savedState = loadGameState();
+    if (savedState) {
+      setTargetPlayerId(savedState.targetPlayerId);
+      setGuesses(savedState.guesses);
+      setGameWon(savedState.gameWon);
+      setGameLost(savedState.gameLost);
+      return;
+    }
+
+    // No saved game, fetch today's player
     const fetchDailyPlayer = async () => {
       try {
         const res = await fetch("/api/daily-player");
         const data = await res.json();
         setTargetPlayerId(data.targetPlayerId);
+        setDateString(data.date);
       } catch (error) {
         console.error("Failed to fetch daily player:", error);
       }
@@ -33,6 +50,19 @@ export default function HomePage() {
 
     fetchDailyPlayer();
   }, []);
+
+  // Save game state whenever it changes
+  useEffect(() => {
+    if (targetPlayerId && dateString) {
+      saveGameState({
+        date: dateString,
+        targetPlayerId,
+        guesses,
+        gameWon,
+        gameLost,
+      });
+    }
+  }, [targetPlayerId, guesses, gameWon, gameLost, dateString]);
 
   const handleGuessSubmit = async (player: Player) => {
     if (!targetPlayerId || isLoading) return;
@@ -51,10 +81,13 @@ export default function HomePage() {
 
       const result: GuessResult = await res.json();
 
-      setGuesses([...guesses, result]);
+      const newGuesses = [...guesses, result];
+      setGuesses(newGuesses);
 
       if (result.isCorrect) {
         setGameWon(true);
+      } else if (newGuesses.length >= MAX_GUESSES) {
+        setGameLost(true);
       }
     } catch (error) {
       console.error("Guess submission failed:", error);
@@ -66,7 +99,7 @@ export default function HomePage() {
   return (
     <div className="min-h-screen bg-platinum flex flex-col items-center pt-16 px-4">
       <InfoModal />
-      
+
       <Logo />
 
       {gameActive && (
