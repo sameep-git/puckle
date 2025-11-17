@@ -6,6 +6,7 @@ import Logo from "@/components/Logo";
 import SearchBar from "@/components/SearchBar";
 import GameStatus from "@/components/GameStatus";
 import GuessGrid from "@/components/GuessGrid";
+import InfoModal from "@/components/InfoModal";
 
 const MAX_GUESSES = 6;
 
@@ -64,6 +65,8 @@ export default function HomePage() {
 
   return (
     <div className="min-h-screen bg-platinum flex flex-col items-center pt-16 px-4">
+      <InfoModal />
+      
       <Logo />
 
       {gameActive && (
