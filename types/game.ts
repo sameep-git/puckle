@@ -1,7 +1,7 @@
-export interface Player {
-  Id: string;
-  Name: string;
-}
+import type { Player as FullPlayer } from "@/types/player";
+
+// For game state we only need a minimal player shape (id + name).
+export type Player = Pick<FullPlayer, "Id" | "Name">;
 
 export interface GuessResult {
   isCorrect: boolean;
@@ -30,3 +30,17 @@ export interface GuessResult {
     age: "exact" | "higher" | "lower";
   };
 }
+
+// PlayerInfo is the shape returned by the player API and used when showing the
+// correct player details. It mirrors the data inside GuessResult.player plus
+// optional headshot returned by the API.
+export type PlayerInfo = {
+  name: string;
+  team: string;
+  division: string;
+  position: string;
+  sweater: number;
+  age: number;
+  country: string;
+  headshot?: string | null;
+};

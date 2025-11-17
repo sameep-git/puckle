@@ -1,4 +1,3 @@
-// lib/gameStorage.ts
 import type { GuessResult } from "@/types/game";
 
 interface GameState {
@@ -7,6 +6,8 @@ interface GameState {
   guesses: GuessResult[];
   gameWon: boolean;
   gameLost: boolean;
+  silhouette?: string | null; 
+  silhouetteRevealed?: boolean;
 }
 
 const STORAGE_KEY = "puckle-game-state";

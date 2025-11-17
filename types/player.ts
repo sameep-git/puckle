@@ -9,3 +9,6 @@ export type Player = {
   Country: string;
   Headshot: string;
 };
+
+// Useful convenience type for places that only need id+name
+export type MinimalPlayer = Pick<Player, "Id" | "Name">;

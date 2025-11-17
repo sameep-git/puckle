@@ -12,7 +12,7 @@ export default function GuessRow({ guess }: GuessRowProps) {
   ) => {
     let bgClass = "bg-taupe text-white";
     if (isExact) {
-      bgClass = "bg-cornflower text-white";
+      bgClass = "bg-sage-green text-white";
     } else if (isClose) {
       bgClass = "bg-peach text-black";
     }

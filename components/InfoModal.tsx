@@ -62,7 +62,7 @@ export default function InfoModal() {
               {/* Color Legend */}
               <div className="space-y-3">
                 <div className="flex items-center gap-3">
-                  <div className="w-12 h-12 bg-cornflower border-4 border-black"></div>
+                  <div className="w-12 h-12 bg-sage-green border-4 border-black"></div>
                   <span className="font-bold">Correct! Exact match</span>
                 </div>
                 <div className="flex items-center gap-3">

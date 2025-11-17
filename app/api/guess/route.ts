@@ -2,6 +2,7 @@
 import { supabaseServer } from "@/lib/supabaseServer";
 import { NextResponse } from "next/server";
 import { isSameConference, isSamePositionGroup, isNumberClose } from "@/lib/nhlData";
+import { calculateAge } from "@/lib/utils";
 
 export async function POST(request: Request) {
   const body = await request.json();
@@ -35,18 +36,6 @@ export async function POST(request: Request) {
       { status: 404 }
     );
   }
-
-  // Calculate age from BirthDate
-  const calculateAge = (birthDate: string) => {
-    const today = new Date();
-    const birth = new Date(birthDate);
-    let age = today.getFullYear() - birth.getFullYear();
-    const monthDiff = today.getMonth() - birth.getMonth();
-    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birth.getDate())) {
-      age--;
-    }
-    return age;
-  };
 
   const guessedAge = calculateAge(guessedPlayer.BirthDate);
   const targetAge = calculateAge(targetPlayer.BirthDate);
