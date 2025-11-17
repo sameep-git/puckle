@@ -1,0 +1,16 @@
+/* app/globals.css */
+@import "tailwindcss";
+
+@theme {
+  --color-taupe: #7E6C6C;
+  --color-grapefruit: #F87575;
+  --color-platinum: #EDEFF0;
+  --color-icy-blue: #B9E6FF;
+  --color-cornflower: #5C95FF;
+  --color-peach: #FFC992;
+}
+
+body {
+  background-color: var(--color-platinum);
+  color: #000;
+}

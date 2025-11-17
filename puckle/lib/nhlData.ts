@@ -1,0 +1,41 @@
+// lib/nhlData.ts
+
+export const NHL_CONFERENCES = {
+  Eastern: ["ATL", "MET"],
+  Western: ["CEN", "PAC"],
+} as const;
+
+export const POSITION_GROUPS = {
+  Forward: ["C", "LW", "RW", "W", "F"],
+  Defense: ["D"],
+  Goalie: ["G"],
+} as const;
+
+export function getConference(division: string): "Eastern" | "Western" | null {
+  if (NHL_CONFERENCES.Eastern.includes(division as any)) return "Eastern";
+  if (NHL_CONFERENCES.Western.includes(division as any)) return "Western";
+  return null;
+}
+
+export function getPositionGroup(position: string): "Forward" | "Defense" | "Goalie" | null {
+  if (POSITION_GROUPS.Forward.includes(position as any)) return "Forward";
+  if (POSITION_GROUPS.Defense.includes(position as any)) return "Defense";
+  if (POSITION_GROUPS.Goalie.includes(position as any)) return "Goalie";
+  return null;
+}
+
+export function isSameConference(division1: string, division2: string): boolean {
+  const conf1 = getConference(division1);
+  const conf2 = getConference(division2);
+  return conf1 !== null && conf1 === conf2;
+}
+
+export function isSamePositionGroup(pos1: string, pos2: string): boolean {
+  const group1 = getPositionGroup(pos1);
+  const group2 = getPositionGroup(pos2);
+  return group1 !== null && group1 === group2;
+}
+
+export function isNumberClose(num1: number, num2: number): boolean {
+  return Math.abs(num1 - num2) <= 10;
+}
