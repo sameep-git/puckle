@@ -2,6 +2,7 @@
 "use client";
 import { useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
+import { Close } from "@mui/icons-material";
 
 interface AuthModalProps {
   isOpen: boolean;
@@ -56,17 +57,9 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
           </h2>
           <button
             onClick={onClose}
-            className="text-white hover:text-black transition-colors"
+            className="text-white hover:bg-grapefruit transition-colors"
           >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              height="28"
-              viewBox="0 -960 960 960"
-              width="28"
-              fill="currentColor"
-            >
-              <path d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z" />
-            </svg>
+            <Close htmlColor="white" />
           </button>
         </div>
 

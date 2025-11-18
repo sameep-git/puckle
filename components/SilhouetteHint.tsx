@@ -1,5 +1,6 @@
 // components/SilhouetteHint.tsx
 "use client";
+import { Close, Person } from "@mui/icons-material";
 import { useState } from "react";
 
 interface SilhouetteHintProps {
@@ -28,9 +29,10 @@ export default function SilhouetteHint({ silhouette, isLoading = false }: Silhou
       {!isRevealed ? (
         <button
           onClick={() => setIsRevealed(true)}
-          className="w-full bg-white border-4 border-black px-6 py-4 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all font-bold uppercase"
+          className="flex items-center justify-center w-full bg-white border-4 border-black px-6 py-4 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all font-bold uppercase"
         >
-          👤 Show Silhouette Hint
+            <Person />
+            Show Silhouette Hint
         </button>
       ) : (
         <div className="bg-white border-4 border-black p-6 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] relative">
@@ -40,15 +42,7 @@ export default function SilhouetteHint({ silhouette, isLoading = false }: Silhou
             className="absolute top-2 right-2 bg-grapefruit border-2 border-black p-2 hover:bg-taupe transition-colors"
             aria-label="Close silhouette"
           >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              height="20"
-              viewBox="0 -960 960 960"
-              width="20"
-              fill="currentColor"
-            >
-              <path d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z" />
-            </svg>
+            <Close htmlColor="white" />
           </button>
 
           <p className="font-bold text-center mb-4 uppercase text-sm text-taupe">

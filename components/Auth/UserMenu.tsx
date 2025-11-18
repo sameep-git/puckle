@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import AuthModal from "./AuthModal";
+import { Person } from "@mui/icons-material";
 
 interface UserStats {
   current_streak: number;
@@ -34,7 +35,7 @@ export default function UserMenu() {
       <>
         <button
           onClick={() => setShowAuthModal(true)}
-          className="fixed top-6 left-6 bg-white border-4 border-black px-6 py-3 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] transition-all font-bold uppercase text-sm z-30"
+          className="fixed top-2 left-2 bg-white border-4 border-black px-6 py-3 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] transition-all font-bold uppercase text-sm z-30"
         >
           Sign In
         </button>
@@ -58,12 +59,12 @@ export default function UserMenu() {
 
   return (
     <>
-      <div className="fixed top-6 left-6 z-30">
+      <div className="fixed top-2 left-2 z-30">
         <button
           onClick={() => setShowMenu(!showMenu)}
-          className="bg-cornflower text-white border-4 border-black px-6 py-3 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] transition-all font-bold uppercase text-sm"
+          className="flex items-center gap-2 bg-cornflower text-white border-4 border-black px-6 py-3 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] transition-all font-bold uppercase text-sm"
         >
-          👤 {user.email?.split("@")[0]}
+          <Person /> {user.email?.split("@")[0]}
         </button>
 
         {showMenu && (

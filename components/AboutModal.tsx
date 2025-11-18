@@ -1,5 +1,6 @@
 // components/AboutModal.tsx
 "use client";
+import { Link, Close } from "@mui/icons-material";
 import { useState } from "react";
 
 export default function AboutModal() {
@@ -30,17 +31,9 @@ export default function AboutModal() {
               <h2 className="text-2xl font-bold text-white uppercase">About</h2>
               <button
                 onClick={() => setIsOpen(false)}
-                className="text-white hover:text-black transition-colors"
+                className="text-white hover:bg-grapefruit transition-colors"
               >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  height="28"
-                  viewBox="0 -960 960 960"
-                  width="28"
-                  fill="currentColor"
-                >
-                  <path d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z" />
-                </svg>
+                <Close />
               </button>
             </div>
 
@@ -86,15 +79,7 @@ export default function AboutModal() {
                   rel="noopener noreferrer"
                   className="flex items-center gap-3 bg-white border-4 border-black p-4 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] transition-all font-bold"
                 >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    height="24"
-                    viewBox="0 -960 960 960"
-                    width="24"
-                    fill="currentColor"
-                  >
-                    <path d="M440-280H280q-83 0-141.5-58.5T80-480q0-83 58.5-141.5T280-680h160v80H280q-50 0-85 35t-35 85q0 50 35 85t85 35h160v80ZM320-440v-80h320v80H320Zm200 160v-80h160q50 0 85-35t35-85q0-50-35-85t-85-35H520v-80h160q83 0 141.5 58.5T880-480q0 83-58.5 141.5T680-280H520Z" />
-                  </svg>
+                  <span> <Link /> </span>
                   <span>Website</span>
                 </a>
 
