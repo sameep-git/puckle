@@ -1,7 +1,7 @@
 // app/api/guess/route.ts
 import { supabaseServer } from "@/lib/supabaseServer";
 import { NextResponse } from "next/server";
-import { isSameConference, isSamePositionGroup, isNumberClose } from "@/lib/nhlData";
+import { isSameConference, isSamePositionGroup, isNumberClose, isCountryClose } from "@/lib/nhlData";
 import { calculateAge } from "@/lib/utils";
 
 export async function POST(request: Request) {
@@ -15,7 +15,7 @@ export async function POST(request: Request) {
     );
   }
 
-  const supabase = supabaseServer();
+  const supabase = await supabaseServer();
 
   // Fetch both players
   const { data: guessedPlayer, error: guessError } = await (await supabase)
@@ -51,6 +51,9 @@ export async function POST(request: Request) {
   const sweaterMatch = guessedPlayer.Sweater === targetPlayer.Sweater;
   const sweaterClose = isNumberClose(guessedPlayer.Sweater, targetPlayer.Sweater);
 
+  const countryMatch = guessedPlayer.Country === targetPlayer.Country;
+  const countryClose = await isCountryClose(guessedPlayer.Country, targetPlayer.Country);
+
   // Build comparison response
   const comparison = {
     isCorrect: guessedPlayer.Id === targetPlayer.Id,
@@ -72,7 +75,8 @@ export async function POST(request: Request) {
       sweater: sweaterMatch,
       sweaterClose: sweaterClose && !sweaterMatch, // Yellow hint
       age: guessedAge === targetAge,
-      country: guessedPlayer.Country === targetPlayer.Country,
+      country: countryMatch,
+      countryClose: countryClose && !countryMatch, // Yellow hint
     },
     hints: {
       sweater:

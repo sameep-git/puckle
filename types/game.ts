@@ -24,6 +24,7 @@ export interface GuessResult {
     sweaterClose: boolean;
     age: boolean;
     country: boolean;
+    countryClose: boolean;
   };
   hints: {
     sweater: "exact" | "higher" | "lower";

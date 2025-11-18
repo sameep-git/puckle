@@ -4,7 +4,7 @@ import { NextResponse } from "next/server";
 import { calculateAge } from "@/lib/utils";
 
 export async function GET(request: Request, context: any) {
-  const supabase = supabaseServer();
+  const supabase = await supabaseServer();
 
   const resolvedParams = await context.params;
   const id = resolvedParams?.id;

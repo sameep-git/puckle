@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Space_Grotesk, Righteous } from "next/font/google";
 import "./globals.css";
 import { AuthProvider } from "@/contexts/AuthContext";
-import { Analytics } from "@vercel/analytics/next"
+import { Analytics } from "@vercel/analytics/next";
 
 export const metadata: Metadata = {
   title: "Puckle",

@@ -83,14 +83,14 @@ export default function InfoModal() {
                   <div>
                     <h4 className="font-bold text-lg">TEAM</h4>
                     <p>
-                      <span className="text-cornflower">●</span> Blue = Correct team
+                      <span className="text-sage-green">●</span> Green = Correct team
                     </p>
                   </div>
 
                   <div>
                     <h4 className="font-bold text-lg">DIVISION</h4>
                     <p>
-                      <span className="text-cornflower">●</span> Blue = Correct division
+                      <span className="text-sage-green">●</span> Green = Correct division
                     </p>
                     <p>
                       <span className="text-peach">●</span> Yellow = Same conference, different
@@ -101,7 +101,7 @@ export default function InfoModal() {
                   <div>
                     <h4 className="font-bold text-lg">POSITION</h4>
                     <p>
-                      <span className="text-cornflower">●</span> Blue = Correct position
+                      <span className="text-sage-green">●</span> Green = Correct position
                     </p>
                     <p>
                       <span className="text-peach">●</span> Yellow = Same position group (Forward/Defense/Goalie)
@@ -111,7 +111,7 @@ export default function InfoModal() {
                   <div>
                     <h4 className="font-bold text-lg">NUMBER (#)</h4>
                     <p>
-                      <span className="text-cornflower">●</span> Blue = Correct number
+                      <span className="text-sage-green">●</span> Green = Correct number
                     </p>
                     <p>
                       <span className="text-peach">●</span> Yellow = Within ±10 of the actual number
@@ -122,7 +122,7 @@ export default function InfoModal() {
                   <div>
                     <h4 className="font-bold text-lg">AGE</h4>
                     <p>
-                      <span className="text-cornflower">●</span> Blue = Correct age
+                      <span className="text-sage-green">●</span> Green = Correct age
                     </p>
                     <p>↑ = Target age is higher | ↓ = Target age is lower</p>
                   </div>
@@ -130,7 +130,7 @@ export default function InfoModal() {
                   <div>
                     <h4 className="font-bold text-lg">COUNTRY</h4>
                     <p>
-                      <span className="text-cornflower">●</span> Blue = Correct country
+                      <span className="text-sage-green">●</span> Green = Correct country
                     </p>
                   </div>
                 </div>

@@ -10,7 +10,7 @@ export async function GET(request: Request) {
     return NextResponse.json([]);
   }
 
-  const supabase = supabaseServer();
+  const supabase = await supabaseServer();
   
   const { data: players, error } = await (await supabase)
     .from("players")

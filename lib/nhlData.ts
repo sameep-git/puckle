@@ -6,7 +6,7 @@ export const NHL_CONFERENCES = {
 } as const;
 
 export const POSITION_GROUPS = {
-  Forward: ["C", "LW", "RW", "W", "F"],
+  Forward: ["C", "L", "R", "W", "F"],
   Defense: ["D"],
   Goalie: ["G"],
 } as const;
@@ -38,4 +38,33 @@ export function isSamePositionGroup(pos1: string, pos2: string): boolean {
 
 export function isNumberClose(num1: number, num2: number): boolean {
   return Math.abs(num1 - num2) <= 10;
+}
+
+const borderCache = new Map<string, string[]>();
+
+export async function isCountryClose(country1: string, country2: string): Promise<boolean> {
+  try {
+    // Check cache first
+    if (!borderCache.has(country1)) {
+      const response = await fetch(`https://restcountries.com/v3.1/alpha/${country1}`);
+      console.log(response);
+      if (!response.ok) {
+        console.error(`Country ${country1} not found`);
+        return false;
+      }
+      
+      const data = await response.json();
+      const borderingCountryCodes: string[] = data[0]?.borders || [];
+      borderCache.set(country1, borderingCountryCodes);
+    }
+    
+    const borderingCountries = borderCache.get(country1) || [];
+    console.log(borderingCountries);
+    console.log(country2);
+    console.log(borderingCountries.includes(country2));
+    return borderingCountries.includes(country2);
+  } catch (error) {
+    console.error("Failed to fetch bordering countries:", error);
+    return false;
+  }
 }

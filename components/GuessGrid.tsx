@@ -6,11 +6,12 @@ import CorrectAnswerRow from "./CorrectAnswerRow";
 interface GuessGridProps {
   guesses: GuessResult[];
   triesLeft: number;
+  gameWon: boolean;
   gameLost: boolean;
   correctPlayer?: PlayerInfo | null;
 }
 
-export default function GuessGrid({ guesses, triesLeft, gameLost, correctPlayer }: GuessGridProps) {
+export default function GuessGrid({ guesses, triesLeft, gameWon, gameLost, correctPlayer }: GuessGridProps) {
   if (guesses.length === 0 && !gameLost) {
     return null;
   }
@@ -86,7 +87,7 @@ export default function GuessGrid({ guesses, triesLeft, gameLost, correctPlayer 
           </>
         )}
 
-        {!gameLost && (
+        {!gameLost && !gameWon &&  (
           <div className="text-center mt-4">
             <p className="font-bold text-taupe">{triesLeft} TRIES LEFT</p>
           </div>

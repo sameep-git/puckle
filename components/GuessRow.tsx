@@ -50,7 +50,7 @@ export default function GuessRow({ guess }: GuessRowProps) {
           {guess.player.age}{" "}
           {guess.hints.age !== "exact" && (guess.hints.age === "higher" ? "↑" : "↓")}
         </div>
-        <div className={getCellClass(guess.matches.country)}>
+        <div className={getCellClass(guess.matches.country, guess.matches.countryClose)}>
           <div className="truncate">{guess.player.country}</div>
         </div>
       </div>

@@ -68,7 +68,7 @@ async function generateSilhouette(headshotUrl: string): Promise<string | null> {
 }
 
 export async function GET() {
-  const supabase = supabaseServer();
+  const supabase = await supabaseServer();
   
   const { data: players, error } = await (await supabase)
     .from("players")
