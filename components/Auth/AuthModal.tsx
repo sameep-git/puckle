@@ -17,8 +17,8 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
   const [loading, setLoading] = useState(false);
   const { signIn, signUp } = useAuth();
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = async (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
     setError("");
     setLoading(true);
 
@@ -36,6 +36,12 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
       setError(err.message || "An error occurred");
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter" && !loading) {
+      handleSubmit();
     }
   };
 
@@ -74,6 +80,7 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
+                onKeyDown={handleKeyDown}
                 className="w-full px-4 py-3 border-4 border-black focus:outline-none focus:translate-x-[2px] focus:translate-y-[2px] transition-all"
                 placeholder="your@email.com"
               />
@@ -87,6 +94,7 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
+                onKeyDown={handleKeyDown}
                 className="w-full px-4 py-3 border-4 border-black focus:outline-none focus:translate-x-[2px] focus:translate-y-[2px] transition-all"
                 placeholder="••••••••"
               />
