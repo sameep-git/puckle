@@ -49,7 +49,10 @@ export async function POST(request: Request) {
   const positionClose = isSamePositionGroup(guessedPlayer.Position, targetPlayer.Position);
   
   const sweaterMatch = guessedPlayer.Sweater === targetPlayer.Sweater;
-  const sweaterClose = isNumberClose(guessedPlayer.Sweater, targetPlayer.Sweater);
+  const sweaterClose = isNumberClose(guessedPlayer.Sweater, targetPlayer.Sweater, 10);
+
+  const ageMatch = guessedAge === targetAge;
+  const ageClose = isNumberClose(guessedAge, targetAge, 2);
 
   const countryMatch = guessedPlayer.Country === targetPlayer.Country;
   const countryClose = await isCountryClose(guessedPlayer.Country, targetPlayer.Country);
@@ -74,7 +77,8 @@ export async function POST(request: Request) {
       positionClose: positionClose && !positionMatch, // Yellow hint
       sweater: sweaterMatch,
       sweaterClose: sweaterClose && !sweaterMatch, // Yellow hint
-      age: guessedAge === targetAge,
+      age: ageMatch,
+      ageClose: ageClose && !ageMatch, // Yellow hint
       country: countryMatch,
       countryClose: countryClose && !countryMatch, // Yellow hint
     },

@@ -36,8 +36,8 @@ export function isSamePositionGroup(pos1: string, pos2: string): boolean {
   return group1 !== null && group1 === group2;
 }
 
-export function isNumberClose(num1: number, num2: number): boolean {
-  return Math.abs(num1 - num2) <= 10;
+export function isNumberClose(num1: number, num2: number, range: number): boolean {
+  return Math.abs(num1 - num2) <= range;
 }
 
 const borderCache = new Map<string, string[]>();
@@ -47,7 +47,6 @@ export async function isCountryClose(country1: string, country2: string): Promis
     // Check cache first
     if (!borderCache.has(country1)) {
       const response = await fetch(`https://restcountries.com/v3.1/alpha/${country1}`);
-      console.log(response);
       if (!response.ok) {
         console.error(`Country ${country1} not found`);
         return false;
@@ -59,9 +58,6 @@ export async function isCountryClose(country1: string, country2: string): Promis
     }
     
     const borderingCountries = borderCache.get(country1) || [];
-    console.log(borderingCountries);
-    console.log(country2);
-    console.log(borderingCountries.includes(country2));
     return borderingCountries.includes(country2);
   } catch (error) {
     console.error("Failed to fetch bordering countries:", error);

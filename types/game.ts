@@ -23,6 +23,7 @@ export interface GuessResult {
     sweater: boolean;
     sweaterClose: boolean;
     age: boolean;
+    ageClose: boolean;
     country: boolean;
     countryClose: boolean;
   };

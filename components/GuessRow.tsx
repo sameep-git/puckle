@@ -46,7 +46,7 @@ export default function GuessRow({ guess }: GuessRowProps) {
           {guess.player.sweater}{" "}
           {guess.hints.sweater !== "exact" && (guess.hints.sweater === "higher" ? "↑" : "↓")}
         </div>
-        <div className={getCellClass(guess.matches.age)}>
+        <div className={getCellClass(guess.matches.age, guess.matches.ageClose)}>
           {guess.player.age}{" "}
           {guess.hints.age !== "exact" && (guess.hints.age === "higher" ? "↑" : "↓")}
         </div>
