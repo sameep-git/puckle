@@ -123,6 +123,8 @@ export default function InfoModal() {
                     <h4 className="font-bold text-lg">AGE</h4>
                     <p>
                       <span className="text-sage-green">●</span> Green = Correct age
+                    </p>
+                    <p>
                       <span className="text-peach">●</span> Yellow = Within ±2 years of the actual age
                     </p>
                     <p>↑ = Target age is higher | ↓ = Target age is lower</p>
@@ -132,6 +134,8 @@ export default function InfoModal() {
                     <h4 className="font-bold text-lg">COUNTRY</h4>
                     <p>
                       <span className="text-sage-green">●</span> Green = Correct country
+                    </p>
+                    <p>
                       <span className="text-peach">●</span> Yellow = Bordering country
                     </p>
                   </div>
