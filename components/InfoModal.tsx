@@ -1,5 +1,5 @@
 "use client";
-import { Close, Info } from "@mui/icons-material";
+import { Close, Help } from "@mui/icons-material";
 import { useState } from "react";
 
 export default function InfoModal() {
@@ -7,13 +7,13 @@ export default function InfoModal() {
 
   return (
     <>
-      {/* Info Button - moved down and made responsive */}
+      {/* Info Button - moved back to top right */}
       <button
         onClick={() => setIsOpen(true)}
-        className="fixed bottom-6 right-60 md:bottom-6 md:right-60 bg-white border-4 border-black py-1.5 px-1.5 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] transition-all z-30"
-        aria-label="Info"
+  className="fixed top-2 right-3 md:top-2 md:right-3 bg-white border-4 border-black py-1.5 px-1.5 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] transition-all z-30"
+        aria-label="Help"
       >
-        <Info />
+        <Help />
       </button>
 
       {/* Modal - same as before */}

@@ -10,24 +10,12 @@ export default function SearchBar({ onGuessSubmit, disabled }: SearchBarProps) {
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState<Player[]>([]);
   const [selectedPlayer, setSelectedPlayer] = useState<Player | null>(null);
+  const [highlightedIndex, setHighlightedIndex] = useState<number>(-1);
   const inputRef = useRef<HTMLInputElement>(null);
-
-  // Keep focus on input
-  useEffect(() => {
-    const keepFocus = () => {
-      if (inputRef.current && !disabled) {
-        inputRef.current.focus();
-      }
-    };
-
-    keepFocus();
-    window.addEventListener("click", keepFocus);
-
-    return () => window.removeEventListener("click", keepFocus);
-  }, [disabled]);
 
   const handleSearch = async (query: string) => {
     setSearchQuery(query);
+    setHighlightedIndex(-1);
 
     if (query.length < 3) {
       setSearchResults([]);
@@ -47,15 +35,58 @@ export default function SearchBar({ onGuessSubmit, disabled }: SearchBarProps) {
     setSelectedPlayer(player);
     setSearchQuery(player.Name);
     setSearchResults([]);
+    setHighlightedIndex(-1);
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === "Enter" && selectedPlayer) {
+    if (searchResults.length > 0) {
+      if (e.key === "ArrowDown") {
+        e.preventDefault();
+        setHighlightedIndex((prev) => (prev < searchResults.length - 1 ? prev + 1 : 0));
+      } else if (e.key === "ArrowUp") {
+        e.preventDefault();
+        setHighlightedIndex((prev) => (prev > 0 ? prev - 1 : searchResults.length - 1));
+      } else if (e.key === "Enter") {
+        if (highlightedIndex >= 0 && highlightedIndex < searchResults.length) {
+          handleSelectPlayer(searchResults[highlightedIndex]);
+        } else if (selectedPlayer) {
+          onGuessSubmit(selectedPlayer);
+          setSearchQuery("");
+          setSelectedPlayer(null);
+        }
+      }
+    } else if (e.key === "Enter" && selectedPlayer) {
       onGuessSubmit(selectedPlayer);
       setSearchQuery("");
       setSelectedPlayer(null);
     }
   };
+
+  // Trigger guess when Enter is pressed without focus on the input
+  useEffect(() => {
+    if (disabled) return;
+
+    const handleGlobalKeyDown = (e: KeyboardEvent) => {
+      if (e.key !== "Enter") return;
+
+      const activeElement = document.activeElement as HTMLElement | null;
+      const isInputFocused = inputRef.current && activeElement === inputRef.current;
+      const isBodyFocused = !activeElement || activeElement === document.body;
+
+      if (isInputFocused || !isBodyFocused) return;
+
+      if (selectedPlayer) {
+        onGuessSubmit(selectedPlayer);
+        setSearchQuery("");
+        setSelectedPlayer(null);
+        setSearchResults([]);
+        setHighlightedIndex(-1);
+      }
+    };
+
+    window.addEventListener("keydown", handleGlobalKeyDown);
+    return () => window.removeEventListener("keydown", handleGlobalKeyDown);
+  }, [disabled, selectedPlayer, onGuessSubmit]);
 
   return (
     <div className="w-full max-w-xl relative">
@@ -68,7 +99,7 @@ export default function SearchBar({ onGuessSubmit, disabled }: SearchBarProps) {
         placeholder="TYPE PLAYER NAME..."
         disabled={disabled}
         autoFocus
-        className="w-full px-6 py-5 text-xl font-bold border-4 border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] focus:outline-none focus:translate-x-[2px] focus:translate-y-[2px] focus:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all bg-white uppercase placeholder:text-taupe/50 disabled:opacity-50"
+  className="w-full px-6 py-5 text-xl font-bold border-4 border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] focus:outline-none focus:translate-x-0.5 focus:translate-y-0.5 focus:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all bg-white uppercase placeholder:text-taupe/50 disabled:opacity-50"
       />
 
       {/* Search Results Dropdown */}
@@ -78,7 +109,10 @@ export default function SearchBar({ onGuessSubmit, disabled }: SearchBarProps) {
             <button
               key={index}
               onClick={() => handleSelectPlayer(player)}
-              className="w-full px-6 py-4 text-left font-bold border-b-4 border-black last:border-b-0 hover:bg-icy-blue transition-colors uppercase"
+              className={`w-full px-6 py-4 text-left font-bold border-b-4 border-black last:border-b-0 transition-colors uppercase ${
+                index === highlightedIndex ? "bg-icy-blue" : "hover:bg-icy-blue"
+              }`}
+              tabIndex={-1}
             >
               {player.Name}
             </button>
