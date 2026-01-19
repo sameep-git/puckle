@@ -26,7 +26,7 @@ export default function SearchBar({ onGuessSubmit, disabled }: SearchBarProps) {
       const res = await fetch(`/api/search-players?q=${encodeURIComponent(query)}`);
       const data = await res.json();
       setSearchResults(data);
-    } catch (error) {
+    } catch (_error) {
       console.error("Search failed:", error);
     }
   };
@@ -99,7 +99,7 @@ export default function SearchBar({ onGuessSubmit, disabled }: SearchBarProps) {
         placeholder="TYPE PLAYER NAME..."
         disabled={disabled}
         autoFocus
-  className="w-full px-6 py-5 text-xl font-bold border-4 border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] focus:outline-none focus:translate-x-0.5 focus:translate-y-0.5 focus:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all bg-white uppercase placeholder:text-taupe/50 disabled:opacity-50"
+        className="w-full px-6 py-5 text-xl font-bold border-4 border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] focus:outline-none focus:translate-x-0.5 focus:translate-y-0.5 focus:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all bg-white uppercase placeholder:text-taupe/50 disabled:opacity-50"
       />
 
       {/* Search Results Dropdown */}
@@ -109,9 +109,8 @@ export default function SearchBar({ onGuessSubmit, disabled }: SearchBarProps) {
             <button
               key={index}
               onClick={() => handleSelectPlayer(player)}
-              className={`w-full px-6 py-4 text-left font-bold border-b-4 border-black last:border-b-0 transition-colors uppercase ${
-                index === highlightedIndex ? "bg-icy-blue" : "hover:bg-icy-blue"
-              }`}
+              className={`w-full px-6 py-4 text-left font-bold border-b-4 border-black last:border-b-0 transition-colors uppercase ${index === highlightedIndex ? "bg-icy-blue" : "hover:bg-icy-blue"
+                }`}
               tabIndex={-1}
             >
               {player.Name}

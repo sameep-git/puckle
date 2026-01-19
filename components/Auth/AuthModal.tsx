@@ -22,18 +22,21 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
     setError("");
     setLoading(true);
 
+
     try {
       if (isSignUp) {
         await signUp(email, password);
-        alert("Check your email to confirm your account!");
+
       } else {
         await signIn(email, password);
+
       }
       onClose();
       setEmail("");
       setPassword("");
-    } catch (err: any) {
-      setError(err.message || "An error occurred");
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : "An error occurred";
+      setError(message);
     } finally {
       setLoading(false);
     }

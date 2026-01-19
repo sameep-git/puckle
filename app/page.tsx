@@ -12,11 +12,17 @@ import SilhouetteHint from "@/components/SilhouetteHint";
 import { saveGameState, loadGameState } from "@/lib/gameStorage";
 import UserMenu from "@/components/Auth/UserMenu";
 import { useAuth } from "@/contexts/AuthContext";
+import { useQuery, useMutation } from "convex/react";
+import { api } from "@/convex/_generated/api";
 
 const MAX_GUESSES = 6;
 
 export default function HomePage() {
   const { user, loading: authLoading } = useAuth();
+  // Convex hooks
+  const userStats = useQuery(api.stats.get);
+  const updateUserStats = useMutation(api.stats.update);
+
   const [targetPlayerId, setTargetPlayerId] = useState<string>("");
   const [silhouette, setSilhouette] = useState<string | null>(null);
   const [guesses, setGuesses] = useState<GuessResult[]>([]);
@@ -29,36 +35,69 @@ export default function HomePage() {
 
   const gameActive = !gameWon && !gameLost;
 
-  // Load game state from cloud if logged in, localStorage if not
+  // Sync state from Convex if logged in, or localStorage if not
   useEffect(() => {
     const loadGame = async () => {
-      if (authLoading) return; // Wait for auth to load
+      if (authLoading) return;
 
       const today = new Date().toISOString().slice(0, 10);
       setDateString(today);
 
       if (user) {
-        // Logged in: load from database
-        try {
-          const res = await fetch("/api/user-stats");
-          const stats = await res.json();
-
+        // Logged in: sync from userStats
+        if (userStats) {
           // Check if there's a game in progress for today
-          if (stats.current_game_date === today && stats.current_game_target_player_id) {
-            setTargetPlayerId(stats.current_game_target_player_id);
-            setGuesses(stats.current_game_guesses || []);
-            setGameWon(stats.current_game_won);
-            setGameLost(stats.current_game_guesses?.length >= MAX_GUESSES && !stats.current_game_won);
-            
-            // Fetch silhouette
-            const dailyRes = await fetch("/api/daily-player");
-            const dailyData = await dailyRes.json();
-            setSilhouette(dailyData.silhouette);
-            setIsFetchingSilhouette(false);
+          if (userStats.currentGameDate === today && userStats.currentGameTargetPlayerId) {
+            setTargetPlayerId(userStats.currentGameTargetPlayerId);
+            // Cast any to GuessResult[] if schema is loose, or ensure schema matches
+            setGuesses((userStats.currentGameGuesses as GuessResult[]) || []);
+            setGameWon(userStats.currentGameWon || false);
+            setGameLost(!!(userStats.currentGameCompleted && !userStats.currentGameWon)); // specific logic?
+            // Actually if completed and not won, it's lost.
+            // Or if logic says guesses >= MAX and not won.
+            // Let's trust local calculation for gameLost if not explicitly stored?
+            // Convex schema has `currentGameWon` and `currentGameCompleted`.
+            // If completed and won is false, it's lost.
+            if (userStats.currentGameCompleted && !userStats.currentGameWon) {
+              setGameLost(true);
+            }
+
+            // Fetch silhouette if not loaded
+            if (!silhouette) {
+              try {
+                const dailyRes = await fetch("/api/daily-player");
+                const dailyData = await dailyRes.json();
+                setSilhouette(dailyData.silhouette);
+              } catch (err) {
+                console.error(err);
+              } finally {
+                setIsFetchingSilhouette(false);
+              }
+            } else {
+              setIsFetchingSilhouette(false);
+            }
             return;
+          } else {
+            // New game or stats specific to yesterday
+            // Fetch today's player
+            try {
+              setIsFetchingSilhouette(true);
+              const res = await fetch("/api/daily-player");
+              const data = await res.json();
+              setTargetPlayerId(data.targetPlayerId);
+              setDateString(data.date);
+              setSilhouette(data.silhouette);
+
+              // Reset local state for new game
+              setGuesses([]);
+              setGameWon(false);
+              setGameLost(false);
+            } catch (error) {
+              console.error("Failed to fetch daily player:", error);
+            } finally {
+              setIsFetchingSilhouette(false);
+            }
           }
-        } catch (error) {
-          console.error("Failed to load stats:", error);
         }
       } else {
         // Not logged in: use localStorage
@@ -72,27 +111,27 @@ export default function HomePage() {
           setIsFetchingSilhouette(false);
           return;
         }
-      }
 
-      // New game: fetch today's player
-      try {
-        setIsFetchingSilhouette(true);
-        const res = await fetch("/api/daily-player");
-        const data = await res.json();
-        setTargetPlayerId(data.targetPlayerId);
-        setDateString(data.date);
-        setSilhouette(data.silhouette);
-      } catch (error) {
-        console.error("Failed to fetch daily player:", error);
-      } finally {
-        setIsFetchingSilhouette(false);
+        // No saved state, fetch daily
+        try {
+          setIsFetchingSilhouette(true);
+          const res = await fetch("/api/daily-player");
+          const data = await res.json();
+          setTargetPlayerId(data.targetPlayerId);
+          setDateString(data.date);
+          setSilhouette(data.silhouette);
+        } catch (error) {
+          console.error("Failed to fetch daily player:", error);
+        } finally {
+          setIsFetchingSilhouette(false);
+        }
       }
     };
 
     loadGame();
-  }, [user, authLoading]);
+  }, [user, authLoading, userStats]); // Depend on userStats to re-sync when loaded
 
-  // Save to localStorage for anonymous users (keep this for backward compatibility)
+  // Save to localStorage for anonymous users
   useEffect(() => {
     if (!user && targetPlayerId && dateString) {
       saveGameState({
@@ -112,6 +151,7 @@ export default function HomePage() {
     setIsLoading(true);
 
     try {
+      // Validate guess (Client-side validation relying on API for comparison logic)
       const res = await fetch("/api/guess", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -130,67 +170,76 @@ export default function HomePage() {
       setGameWon(won);
       setGameLost(lost);
 
-      // Save to database if logged in
+      // Save to Convex if logged in
       if (user) {
         try {
-          await fetch("/api/user-stats", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              current_game_date: dateString,
-              current_game_target_player_id: targetPlayerId,
-              current_game_guesses: newGuesses,
-              current_game_won: won,
-              current_game_completed: won || lost,
-            }),
-          });
+          // Logic for streaks is handled in Convex mutation usually?
+          // Or computed here.
+          // Supabase implementation computed it on client.
+          // Ideally we move this logic to the backend mutation!
+          // `convex/stats.ts` `update` mutation takes update args.
 
-          // If game completed, update streaks and distribution
+          // Let's look at what fields I send.
+          // I can send `currentGameGuesses`, `currentGameWon`, etc.
+          // If I want to update streaks, I should probably do it in the mutation logic in Convex
+          // rather than passing it from client?
+          // However, my `update` mutation (step 114) might just be a dumb setter (patch).
+
+          // If I use the dumb setter, I need to compute stats here.
+          // AND I need current stats. `userStats` has them.
+
+          const updateData: Record<string, unknown> = {
+            currentGameDate: dateString,
+            currentGameTargetPlayerId: targetPlayerId,
+            currentGameGuesses: newGuesses,
+            currentGameWon: won,
+            currentGameCompleted: won || lost,
+            lastPlayedDate: userStats?.lastPlayedDate, // default to current
+          };
+
           if (won || lost) {
-            // Fetch current stats to calculate new streaks
-            const statsRes = await fetch("/api/user-stats");
-            const currentStats = await statsRes.json();
+            const currentStreak = userStats?.currentStreak || 0;
+            const longestStreak = userStats?.longestStreak || 0;
+            const guessDist = userStats?.guessDistribution as Record<string, number> ||
+              { "1": 0, "2": 0, "3": 0, "4": 0, "5": 0, "6": 0 };
 
-            // Calculate new streaks
             const yesterday = new Date(Date.now() - 86400000).toISOString().slice(0, 10);
             let newStreak = 0;
-            
+
             if (won) {
-              if (currentStats.last_played_date === yesterday) {
-                // Streak continues
-                newStreak = (currentStats.current_streak || 0) + 1;
+              if (userStats?.lastPlayedDate === yesterday) {
+                newStreak = currentStreak + 1;
               } else {
-                // New streak
-                newStreak = 1;
+                // Check if played today already?
+                if (userStats?.lastPlayedDate === dateString) {
+                  newStreak = currentStreak; // Already updated?
+                } else {
+                  newStreak = 1;
+                }
               }
+            } else {
+              newStreak = 0;
             }
 
-            const newLongestStreak = Math.max(newStreak, currentStats.longest_streak || 0);
-
-            // Update guess distribution if won
-            const newDistribution = { ...(currentStats.guess_distribution || {}) };
+            const newLongestStreak = Math.max(newStreak, longestStreak);
+            const newDistribution = { ...guessDist };
             if (won) {
               const guessCount = newGuesses.length.toString();
               newDistribution[guessCount] = (newDistribution[guessCount] || 0) + 1;
             }
 
-            // Update stats with streaks and distribution
-            await fetch("/api/user-stats", {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({
-                current_streak: newStreak,
-                longest_streak: newLongestStreak,
-                last_played_date: dateString,
-                guess_distribution: newDistribution,
-              }),
-            });
+            updateData.currentStreak = newStreak;
+            updateData.longestStreak = newLongestStreak;
+            updateData.lastPlayedDate = dateString;
+            updateData.guessDistribution = newDistribution;
           }
-        } catch (error) {
-          console.error("Failed to save to database:", error);
+
+          await updateUserStats(updateData);
+
+        } catch (err) {
+          console.error("Failed to save to Convex:", err);
         }
       }
-      // localStorage save happens automatically via useEffect above
     } catch (error) {
       console.error("Guess submission failed:", error);
     } finally {
@@ -226,8 +275,8 @@ export default function HomePage() {
       {gameActive && (
         <>
           <SearchBar onGuessSubmit={handleGuessSubmit} disabled={isLoading} />
-          <SilhouetteHint 
-            silhouette={silhouette} 
+          <SilhouetteHint
+            silhouette={silhouette}
             isLoading={isFetchingSilhouette}
           />
         </>
@@ -235,8 +284,8 @@ export default function HomePage() {
 
       <GameStatus gameWon={gameWon} gameLost={gameLost} />
 
-      <GuessGrid 
-        guesses={guesses} 
+      <GuessGrid
+        guesses={guesses}
         triesLeft={MAX_GUESSES - guesses.length}
         gameWon={gameWon}
         gameLost={gameLost}

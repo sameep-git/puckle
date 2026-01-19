@@ -1,11 +1,11 @@
 // app/api/player/[id]/route.ts
-import { supabaseServer } from "@/lib/supabaseServer";
 import { NextResponse } from "next/server";
 import { calculateAge } from "@/lib/utils";
+import { convex } from "@/lib/convex";
+import { api } from "@/convex/_generated/api";
+import { Id } from "@/convex/_generated/dataModel";
 
-export async function GET(request: Request, context: any) {
-  const supabase = await supabaseServer();
-
+export async function GET(request: Request, context: { params: Promise<{ id: string }> }) {
   const resolvedParams = await context.params;
   const id = resolvedParams?.id;
 
@@ -13,26 +13,27 @@ export async function GET(request: Request, context: any) {
     return NextResponse.json({ error: "Missing player id" }, { status: 400 });
   }
 
-  const { data: player, error } = await (await supabase)
-    .from("players")
-    .select("*")
-    .eq("Id", id)
-    .single();
+  try {
+    const player = await convex.query(api.players.get, { id: id as Id<"players"> });
 
-  if (error || !player) {
-    return NextResponse.json({ error: "Player not found" }, { status: 404 });
+    if (!player) {
+      return NextResponse.json({ error: "Player not found" }, { status: 404 });
+    }
+
+    const age = calculateAge(player.birthDate);
+
+    return NextResponse.json({
+      name: player.name,
+      team: player.team,
+      division: player.division,
+      position: player.position,
+      sweater: player.sweater,
+      age: age,
+      country: player.country,
+      headshot: player.headshot,
+    });
+  } catch (error) {
+    console.error(error);
+    return NextResponse.json({ error: "Invalid ID or Server Error" }, { status: 500 });
   }
-
-  const age = calculateAge(player.BirthDate);
-
-  return NextResponse.json({
-    name: player.Name,
-    team: player.Team,
-    division: player.Division,
-    position: player.Position,
-    sweater: player.Sweater,
-    age: age,
-    country: player.Country,
-    headshot: player.Headshot,
-  });
 }

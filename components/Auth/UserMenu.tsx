@@ -1,34 +1,19 @@
-// components/Auth/UserMenu.tsx
 "use client";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import AuthModal from "./AuthModal";
 import { Person } from "@mui/icons-material";
-
-interface UserStats {
-  current_streak: number;
-  longest_streak: number;
-  guess_distribution: Record<string, number>;
-}
+import { useQuery } from "convex/react";
+import { api } from "@/convex/_generated/api";
 
 export default function UserMenu() {
   const { user, signOut } = useAuth();
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [showMenu, setShowMenu] = useState(false);
-  const [stats, setStats] = useState<UserStats | null>(null);
-  const [loadingStats, setLoadingStats] = useState(false);
 
-  // Fetch stats when menu opens
-  useEffect(() => {
-    if (showMenu && user && !stats) {
-      setLoadingStats(true);
-      fetch("/api/user-stats")
-        .then((res) => res.json())
-        .then((data) => setStats(data))
-        .catch((err) => console.error("Failed to load stats:", err))
-        .finally(() => setLoadingStats(false));
-    }
-  }, [showMenu, user]);
+  // Use Convex query hook instead of fetch
+  const stats = useQuery(api.stats.get);
+  const loadingStats = stats === undefined && !!user;
 
   if (!user) {
     return (
@@ -48,13 +33,13 @@ export default function UserMenu() {
   }
 
   // Calculate total wins
-  const totalWins = stats
-    ? Object.values(stats.guess_distribution).reduce((sum, count) => sum + count, 0)
+  const totalWins = stats && stats.guessDistribution
+    ? Object.values(stats.guessDistribution as Record<string, number>).reduce((sum, count) => sum + count, 0)
     : 0;
 
   // Find max value for bar chart scaling
-  const maxCount = stats
-    ? Math.max(...Object.values(stats.guess_distribution), 1)
+  const maxCount = stats && stats.guessDistribution
+    ? Math.max(...Object.values(stats.guessDistribution as Record<string, number>), 1)
     : 1;
 
   return (
@@ -85,7 +70,7 @@ export default function UserMenu() {
                   <div className="grid grid-cols-2 gap-3 mb-4">
                     <div className="bg-platinum border-2 border-black p-3 text-center">
                       <div className="text-2xl font-bold text-cornflower">
-                        {stats.current_streak}
+                        {stats.currentStreak}
                       </div>
                       <div className="text-xs font-bold uppercase text-taupe">
                         Current Streak
@@ -93,7 +78,7 @@ export default function UserMenu() {
                     </div>
                     <div className="bg-platinum border-2 border-black p-3 text-center">
                       <div className="text-2xl font-bold text-cornflower">
-                        {stats.longest_streak}
+                        {stats.longestStreak}
                       </div>
                       <div className="text-xs font-bold uppercase text-taupe">
                         Best Streak
@@ -118,7 +103,7 @@ export default function UserMenu() {
                     </h4>
                     <div className="space-y-1">
                       {[1, 2, 3, 4, 5, 6].map((num) => {
-                        const count = stats.guess_distribution[num.toString()] || 0;
+                        const count = (stats.guessDistribution as Record<string, number>)[num.toString()] || 0;
                         const percentage = maxCount > 0 ? (count / maxCount) * 100 : 0;
 
                         return (
@@ -155,7 +140,7 @@ export default function UserMenu() {
               onClick={() => {
                 signOut();
                 setShowMenu(false);
-                setStats(null);
+                // setStats(null); // Managed by hook now
               }}
               className="w-full px-6 py-3 text-left font-bold hover:bg-grapefruit hover:text-white transition-colors uppercase text-sm"
             >

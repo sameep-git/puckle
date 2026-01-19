@@ -12,15 +12,20 @@ export const POSITION_GROUPS = {
 } as const;
 
 export function getConference(division: string): "Eastern" | "Western" | null {
-  if (NHL_CONFERENCES.Eastern.includes(division as any)) return "Eastern";
-  if (NHL_CONFERENCES.Western.includes(division as any)) return "Western";
+  const eastern = NHL_CONFERENCES.Eastern as readonly string[];
+  const western = NHL_CONFERENCES.Western as readonly string[];
+  if (eastern.includes(division)) return "Eastern";
+  if (western.includes(division)) return "Western";
   return null;
 }
 
 export function getPositionGroup(position: string): "Forward" | "Defense" | "Goalie" | null {
-  if (POSITION_GROUPS.Forward.includes(position as any)) return "Forward";
-  if (POSITION_GROUPS.Defense.includes(position as any)) return "Defense";
-  if (POSITION_GROUPS.Goalie.includes(position as any)) return "Goalie";
+  const forward = POSITION_GROUPS.Forward as readonly string[];
+  const defense = POSITION_GROUPS.Defense as readonly string[];
+  const goalie = POSITION_GROUPS.Goalie as readonly string[];
+  if (forward.includes(position)) return "Forward";
+  if (defense.includes(position)) return "Defense";
+  if (goalie.includes(position)) return "Goalie";
   return null;
 }
 
@@ -51,12 +56,12 @@ export async function isCountryClose(country1: string, country2: string): Promis
         console.error(`Country ${country1} not found`);
         return false;
       }
-      
+
       const data = await response.json();
       const borderingCountryCodes: string[] = data[0]?.borders || [];
       borderCache.set(country1, borderingCountryCodes);
     }
-    
+
     const borderingCountries = borderCache.get(country1) || [];
     return borderingCountries.includes(country2);
   } catch (error) {

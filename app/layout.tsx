@@ -1,7 +1,8 @@
+// app/layout.tsx
 import type { Metadata } from "next";
 import { Space_Grotesk, Righteous } from "next/font/google";
 import "./globals.css";
-import { AuthProvider } from "@/contexts/AuthContext";
+import { ConvexClientProvider } from "@/components/ConvexClientProvider";
 import { Analytics } from "@vercel/analytics/next";
 
 export const metadata: Metadata = {
@@ -9,7 +10,7 @@ export const metadata: Metadata = {
   description: "Wordle but for NHL",
 };
 
-const spaceGrotesk = Space_Grotesk({ 
+const spaceGrotesk = Space_Grotesk({
   subsets: ["latin"],
   weight: ["400", "700"],
 });
@@ -31,9 +32,9 @@ export default function RootLayout({
         className={`${spaceGrotesk.className} ${righteous.variable}`}
       >
         <Analytics />
-        <AuthProvider>
+        <ConvexClientProvider>
           {children}
-        </AuthProvider>
+        </ConvexClientProvider>
       </body>
     </html>
   );
