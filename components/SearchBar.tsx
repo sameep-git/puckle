@@ -27,7 +27,7 @@ export default function SearchBar({ onGuessSubmit, disabled }: SearchBarProps) {
       const data = await res.json();
       setSearchResults(data);
     } catch (_error) {
-      console.error("Search failed:", error);
+      // Silently fail - search results just won't update
     }
   };
 
