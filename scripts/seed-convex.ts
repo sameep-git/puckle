@@ -11,6 +11,11 @@ const client = new ConvexHttpClient(process.env.NEXT_PUBLIC_CONVEX_URL!);
 async function seed() {
     const playersStart = JSON.parse(fs.readFileSync("get_data/players.json", "utf8"));
 
+    // Clear existing players to avoid duplicates
+    console.log("Clearing existing players...");
+    await client.mutation(api.players.clearAll, {});
+    console.log("Cleared!");
+
     // Chunking to avoid payload limits if necessary (Convex limit is large but good practice)
     const chunkSize = 100;
     for (let i = 0; i < playersStart.length; i += chunkSize) {
